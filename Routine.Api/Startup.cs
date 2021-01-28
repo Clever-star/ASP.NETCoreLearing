@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -42,6 +43,11 @@ namespace Routine.Api
                 //setup.OutputFormatters.Insert(0, new XmlDataContractSerializerOutputFormatter());
             }).AddXmlDataContractSerializerFormatters();
             //现在的写法，可以直接添加输入输出格式
+
+            //将这套服务注册到现在的程序及当中
+            //使用AddAutoMapper这个方法，参数要有一个Assembly类的一个数组，AutoMapper将在这个程序集里面扫描寻找AutoMapper的配置文件
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            //寻找当前应用域下的Assemblies
 
             services.AddScoped<ICompanyRepository, CompanyRepository>();
             

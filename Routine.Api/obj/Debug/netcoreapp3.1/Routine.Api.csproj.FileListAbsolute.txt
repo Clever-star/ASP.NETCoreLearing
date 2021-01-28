@@ -120,3 +120,5 @@ D:\home\技能\ASP.NET core 3.x\MyCode\Routine\Routine.Api\obj\Debug\netcoreapp3
 D:\home\技能\ASP.NET core 3.x\MyCode\Routine\Routine.Api\obj\Debug\netcoreapp3.1\Routine.Api.dll
 D:\home\技能\ASP.NET core 3.x\MyCode\Routine\Routine.Api\obj\Debug\netcoreapp3.1\Routine.Api.pdb
 D:\home\技能\ASP.NET core 3.x\MyCode\Routine\Routine.Api\obj\Debug\netcoreapp3.1\Routine.Api.genruntimeconfig.cache
+D:\home\技能\ASP.NET core 3.x\MyCode\Routine\Routine.Api\bin\Debug\netcoreapp3.1\AutoMapper.dll
+D:\home\技能\ASP.NET core 3.x\MyCode\Routine\Routine.Api\bin\Debug\netcoreapp3.1\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

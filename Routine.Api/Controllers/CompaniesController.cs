@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Routine.Api.Models;
 using Routine.Api.Services;
 using System;
@@ -18,12 +19,17 @@ namespace Routine.Api.Controllers
     //ControllerBase提供了很多用于处理HTTP请求的属性和方法
     {
         private readonly ICompanyRepository _companyRepository;
+        private readonly IMapper _mappper;
+
         //使用CompanyRepository来操作数据库，现在构造函数对其进行注入，使用接口
-        public CompaniesController(ICompanyRepository companyRepository)
+        public CompaniesController(ICompanyRepository companyRepository,IMapper mappper) //在构造函数中注入，map实例实现IMapper接口  快捷键Alt+Enter
         {
             _companyRepository = companyRepository ?? 
                 throw new ArgumentException(nameof(companyRepository));
             //在为none时抛出异常
+
+            _mappper = mappper ??
+                throw new ArgumentException(nameof(mappper)); ;
         }
         //标注，表示使用GET方法
         [HttpGet]
@@ -46,26 +52,30 @@ namespace Routine.Api.Controllers
             //return NotFound();
             //200
 
-            //在添加Dto后，返回类型就要从Entity变成Dto了
-            var companyDtos = new List<CompanyDto>();
-            foreach (var company in companies)
-            {
-                companyDtos.Add(new CompanyDto { 
-                    Id = company.Id,
-                    Name = company.Name
-                });
-            }
-            //此时这种一一赋值的写法在属性多时不适用，需要用到对象映射器，我们使用的是其中的AutoMapper
+            //在添加dto后，返回类型就要从entity变成dto了
+            var companydtos = new List<CompanyDto>();
+            //foreach (var company in companies)
+            //{
+            //    companydtos.Add(new CompanyDto
+            //    {
+            //        Id = company.Id,
+            //        Name = company.Name
+            //    });
+            //}
+            ////此时这种一一赋值的写法在属性多时不适用，需要用到对象映射器，我们使用的是其中的automapper
 
-            //return Ok(companyDtos);
+            var companyDtos = _mappper.Map<IEnumerable<CompanyDto>>(companies);
+            //Map<目标类型>(原类型);
+
+            return Ok(companyDtos);
             //return companyDtos; //第一种写法时（返回值为ActionResult<T>时）
-            return Ok(); //第一种写法时（返回值为ActionResult<T>时）
+            //return Ok(); //第一种写法时（返回值为ActionResult<T>时）
         }
 
         //标明属性路由
         [HttpGet(template:"{companyId}")] //默认的Controller级别的URI是api/Companies 也就是Controller上面的Route加上自己的 api/Companies+/{companyId}  当前URI：api/Companies/{companyId}
         //返回一个具体Company，需要传入一个ID
-        public async Task<IActionResult> GetCompanies(Guid companyId)
+        public async Task<ActionResult<CompanyDto>> GetCompanies(Guid companyId)
         {
             ////第一种写法：（在需要返回结果时不提倡，仅需要返回是否存在的判断时可以使用）
             ////存在的问题：在对存在结果处理的极短时间内如果对资源进行了删除等其它操作，返回结果与实际情况不匹配，会导致返回错误
@@ -84,7 +94,8 @@ namespace Routine.Api.Controllers
             {
                 return NotFound();
             }
-            return Ok(company);
+            //return Ok(company);
+            return Ok(_mappper.Map<CompanyDto>(company)); 
         }
     }
 }
