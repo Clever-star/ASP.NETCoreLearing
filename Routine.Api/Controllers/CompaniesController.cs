@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Routine.Api.Models;
 using Routine.Api.Services;
 using System;
 using System.Collections.Generic;
@@ -40,7 +41,17 @@ namespace Routine.Api.Controllers
             //404
             //return NotFound();
             //200
-            return Ok(companies);
+
+            //在添加Dto后，返回类型就要从Entity变成Dto了
+            var companyDtos = new List<CompanyDto>();
+            foreach (var company in companies)
+            {
+                companyDtos.Add(new CompanyDto { 
+                    Id = company.Id,
+                    Name = company.Name
+                });
+            }
+            return Ok(companyDtos);
         }
 
         //标明属性路由
