@@ -29,8 +29,12 @@ namespace Routine.Api.Controllers
         [HttpGet]
         //获取Company资源，使用async异步方法，结果类型是IActionResult(?)
         //IActionResult接口定义了一些可以代表IAction返回结果的合约(?)，通常返回的是JSON格式，需要序列化
-        public async Task<IActionResult> GetCompanies()
-            //HTTP动词不是在方法命中体现的，但是有一些约定，如果以Get开头，没有其他标注则为httpget
+        public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompanies()
+        //HTTP动词不是在方法命中体现的，但是有一些约定，如果以Get开头，没有其他标注则为httpget
+        //针对返回类型比较明确的情况IActionResult有一个实现类是ActionResult<T>，此时地T就是List<CompanyDto>类型，List继承于IEnumerable
+        //那么此时的返回类型和资源类型就明确了，其他的代码能推断出方法的返回类型
+        //public async Task<IActionResult> GetCompanies()  //第二种写法
+        //好处体现在使用swagger文档时，返回类型更加明确；并且在写返回时能简化——所以尽量使用ActionResult<T>
         {
             var companies = await _companyRepository.GetCompaniesAsync();
 
@@ -51,7 +55,11 @@ namespace Routine.Api.Controllers
                     Name = company.Name
                 });
             }
-            return Ok(companyDtos);
+            //此时这种一一赋值的写法在属性多时不适用，需要用到对象映射器，我们使用的是其中的AutoMapper
+
+            //return Ok(companyDtos);
+            //return companyDtos; //第一种写法时（返回值为ActionResult<T>时）
+            return Ok(); //第一种写法时（返回值为ActionResult<T>时）
         }
 
         //标明属性路由
