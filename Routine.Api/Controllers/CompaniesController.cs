@@ -33,10 +33,10 @@ namespace Routine.Api.Controllers
         }
         //标注，表示使用GET方法
         [HttpGet]
-        //获取Company资源，使用async异步方法，结果类型是IActionResult(?)
-        //IActionResult接口定义了一些可以代表IAction返回结果的合约(?)，通常返回的是JSON格式，需要序列化
+        [HttpHead] //使这个方法即支持HEAD又支持GET，当用GET请求时返回状态码和body；当使用HEAD请求时仅不返回body，其他返回与GET相同
         public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompanies()
         {
+            //throw new Exception("An Exception");
             var companies = await _companyRepository.GetCompaniesAsync();
             var companydtos = new List<CompanyDto>();
             var companyDtos = _mappper.Map<IEnumerable<CompanyDto>>(companies);
