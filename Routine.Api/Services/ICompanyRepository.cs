@@ -1,4 +1,5 @@
-﻿using Routine.Api.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
+using Routine.Api.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace Routine.Api.Services
         Task<bool> CompanyExistsAsync(Guid companyId);
         //针对公司的增删改查
 
-        Task<IEnumerable<Employee>> GetEmployeesAsync(Guid companyId);
+        Task<IEnumerable<Employee>> GetEmployeesAsync(Guid companyId, [FromQuery] string genderDisplay,string q);
         Task<Employee> GetEmployeeAsync(Guid companyId, Guid employeeId);
         void AddEmployee(Guid companyId, Employee employee);
         void UpdateEmployee(Employee employee);

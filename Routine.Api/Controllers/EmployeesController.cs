@@ -23,7 +23,9 @@ namespace Routine.Api.Controllers
 
         [HttpGet]
         //获取一个公司下的所有员工
-        public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetEmployeesForCompany(Guid companyId)
+        public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetEmployeesForCompany(Guid companyId, 
+            [FromQuery] string genderDisplay,
+            string q)
         {
             //先进行判断是否存在
             if (!await _companyRepository.CompanyExistsAsync(companyId))
@@ -31,7 +33,7 @@ namespace Routine.Api.Controllers
                 return NotFound();
             }
 
-            var employees = await _companyRepository.GetEmployeesAsync(companyId);
+            var employees = await _companyRepository.GetEmployeesAsync(companyId,genderDisplay,q);//传入参数
             //通过AutoMapper进行映射转换
             var employeeDtos = _mapper.Map<IEnumerable<EmployeeDto>>(employees);
 

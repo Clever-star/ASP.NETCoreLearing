@@ -56,11 +56,19 @@ namespace Routine.Api
             {
                 option.UseSqlite(connectionString:"Data Source=routine.db");
             });
+
+            //添加跨域功能
+            services.AddCors(options => {
+                options.AddPolicy("any", builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            //添加跨域功能
+            app.UseCors("any");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -83,6 +91,7 @@ namespace Routine.Api
             {
                 endpoints.MapControllers();
             });
+
         }
     }
 }
