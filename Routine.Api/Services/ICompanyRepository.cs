@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Routine.Api.DtoParameters;
 using Routine.Api.Entities;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ namespace Routine.Api.Services
 {
     public interface ICompanyRepository
     {
-        Task<IEnumerable<Company>> GetCompaniesAsync();
+        Task<IEnumerable<Company>> GetCompaniesAsync(CompanyDtoParameters parameters);//在接口中修改方法：修改传入参数；下一步：修改实现类CompanyRepository中的方法
         Task<Company> GetCompanyAsync(Guid companyId);
         Task<IEnumerable<Company>> GetCompaniesAsync(IEnumerable<Guid> companyIds);
         void AddCompany(Company company);

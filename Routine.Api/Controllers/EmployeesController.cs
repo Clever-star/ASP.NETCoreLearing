@@ -26,6 +26,7 @@ namespace Routine.Api.Controllers
         public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetEmployeesForCompany(Guid companyId, 
             [FromQuery] string genderDisplay,
             string q)
+            //当查询参数动态变化时，频繁操作函数不方便，将这些参数在ResourceParameters置入一个类中更便于操作
         {
             //先进行判断是否存在
             if (!await _companyRepository.CompanyExistsAsync(companyId))

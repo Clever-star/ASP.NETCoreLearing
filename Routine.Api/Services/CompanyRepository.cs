@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Routine.Api.Data;
+using Routine.Api.DtoParameters;
 using Routine.Api.Entities;
 
 namespace Routine.Api.Services
@@ -18,9 +19,40 @@ namespace Routine.Api.Services
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<IEnumerable<Company>> GetCompaniesAsync()
+        public async Task<IEnumerable<Company>> GetCompaniesAsync(CompanyDtoParameters parameters)//修改接口的实现类中方法的参数
         {
-            return await _context.Companies.ToListAsync();
+            //首先，检查参数是否为null，如果为null则抛出一个异常
+            if (parameters == null) {
+                throw new ArgumentException(nameof(parameters));
+            }
+            //分别判断参数中是否有查询条件
+            if (string.IsNullOrWhiteSpace(parameters.CompanyName) &&
+                string.IsNullOrWhiteSpace(parameters.SearchTerm))
+            {
+                //判断，如果都为空的话，就直接返回
+                return await _context.Companies.ToListAsync();
+            }
+
+            //建立一个查询表达式，此时还没有执行对数据库的查询
+            var queryExpression = _context.Companies as IQueryable<Company>;
+            //逐个判断（过滤条件和搜索条件）
+            //过滤条件：如果公司名不为空
+            if (!string.IsNullOrWhiteSpace(parameters.CompanyName)) {
+                parameters.CompanyName = parameters.CompanyName.Trim();
+                //将CompanyName作为过滤条件
+                queryExpression = queryExpression.Where(x => x.Name == parameters.CompanyName);
+            }
+
+            //查询条件
+            if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
+            {
+                parameters.SearchTerm = parameters.SearchTerm.Trim();
+                //将CompanyName作为过滤条件
+                queryExpression = queryExpression.Where(x => x.Name.Contains(parameters.SearchTerm) ||
+                x.Introduction.Contains(parameters.SearchTerm));
+            }
+
+            return await queryExpression.ToListAsync();//遇到ToList后才真正执行查数据库
         }
 
         public async Task<Company> GetCompanyAsync(Guid companyId)

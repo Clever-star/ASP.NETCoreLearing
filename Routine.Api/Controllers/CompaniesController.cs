@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Routine.Api.DtoParameters;
 using Routine.Api.Models;
 using Routine.Api.Services;
 using System;
@@ -34,10 +35,11 @@ namespace Routine.Api.Controllers
         //标注，表示使用GET方法
         [HttpGet]
         [HttpHead] //使这个方法即支持HEAD又支持GET，当用GET请求时返回状态码和body；当使用HEAD请求时仅不返回body，其他返回与GET相同
-        public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompanies()
+        public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompanies(
+            [FromQuery] CompanyDtoParameters parameters)
         {
             //throw new Exception("An Exception");
-            var companies = await _companyRepository.GetCompaniesAsync();
+            var companies = await _companyRepository.GetCompaniesAsync(parameters);//将参数传递给Repository里的相应方法
             var companydtos = new List<CompanyDto>();
             var companyDtos = _mappper.Map<IEnumerable<CompanyDto>>(companies);
             return Ok(companyDtos);
@@ -46,7 +48,7 @@ namespace Routine.Api.Controllers
         //标明属性路由
         [HttpGet(template:"{companyId}")] //默认的Controller级别的URI是api/Companies 也就是Controller上面的Route加上自己的 api/Companies+/{companyId}  当前URI：api/Companies/{companyId}
         //返回一个具体Company，需要传入一个ID
-        public async Task<ActionResult<CompanyDto>> GetCompanies(Guid companyId)
+        public async Task<ActionResult<CompanyDto>> GetCompany(Guid companyId)
         {
             var company = await _companyRepository.GetCompanyAsync(companyId);
             if (company == null)
