@@ -91,15 +91,14 @@ namespace Routine.Api.Services
         }
 
         //public async Task<IEnumerable<Employee>> GetEmployeesAsync(Guid companyId)
-        public async Task<IEnumerable<Employee>> GetEmployeesAsync(Guid companyId,
-            [FromQuery] string genderDisplay,
+        public async Task<IEnumerable<Employee>> GetEmployeesAsync([FromQuery] string FName,
             [FromQuery] string q)//添加参数，并指定来自查询字符串   [FromQuery(Name = "gender")] string genderDisplay  当两者不同，将传入的参数名与Dto中的参数名进行绑定
         //对这里对方法进行修改后，需要修改接口
         {
-            if (companyId == Guid.Empty)
-            {
-                throw new ArgumentNullException(nameof(companyId));
-            }
+            //if (companyId == Guid.Empty)
+            //{
+            //    throw new ArgumentNullException(nameof(companyId));
+            //}
 
             //return await _context.Employees
             //.Where(x => x.CompanyId == companyId)
@@ -107,24 +106,24 @@ namespace Routine.Api.Services
             //.ToListAsync();
 
             //判断传入参数是否为空，为空时：
-            if (string.IsNullOrEmpty(genderDisplay) && string.IsNullOrWhiteSpace(q))
-            {
-                return await _context.Employees
-                    .Where(x => x.CompanyId == companyId )
-                    .OrderBy(x => x.EmployeeNo)
-                    .ToListAsync();
-            }
+            //if (string.IsNullOrEmpty(genderDisplay) && string.IsNullOrWhiteSpace(q))
+            //{
+            //    return await _context.Employees
+            //        .Where(x => x.CompanyId == companyId )
+            //        .OrderBy(x => x.EmployeeNo)
+            //        .ToListAsync();
+            //}
 
-            var items = _context.Employees.Where(x => x.CompanyId == companyId);
+            var items = _context.Employees.Where(x => x.FirstName == FName);
 
-            if (!string.IsNullOrEmpty(genderDisplay))
-            { 
-                var genderStr = genderDisplay.Trim();
-                //目前为止传入的是字符串，而Entity中是枚举格式
-                var gender = Enum.Parse<Gender>(genderStr);//转为枚举格式
+            //if (!string.IsNullOrEmpty(genderDisplay))
+            //{ 
+            //    var genderStr = genderDisplay.Trim();
+            //    //目前为止传入的是字符串，而Entity中是枚举格式
+            //    var gender = Enum.Parse<Gender>(genderStr);//转为枚举格式
 
-                items = items.Where(x => x.Gender == gender);
-            }
+            //    items = items.Where(x => x.Gender == gender);
+            //}
 
             if (!string.IsNullOrEmpty(q))
             {

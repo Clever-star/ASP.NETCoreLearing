@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Routine.Api.Controllers
 {
     [ApiController]
-    [Route("api/companies/{companyId}/employees")]
+    [Route("api/companies/employees")]
     public class EmployeesController:ControllerBase
     {
         private readonly IMapper _mapper;
@@ -23,21 +23,25 @@ namespace Routine.Api.Controllers
 
         [HttpGet]
         //获取一个公司下的所有员工
-        public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetEmployeesForCompany(Guid companyId, 
-            [FromQuery] string genderDisplay,
-            string q)
+        public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetEmployeesForCompany(string FName, 
+            string No)
         {
-            //先进行判断是否存在
-            if (!await _companyRepository.CompanyExistsAsync(companyId))
-            { 
-                return NotFound();
-            }
+            ////先进行判断是否存在
+            //if (!await _companyRepository.CompanyExistsAsync(companyId))
+            //{ 
+            //    return NotFound();
+            //}
 
-            var employees = await _companyRepository.GetEmployeesAsync(companyId,genderDisplay,q);//传入参数
+            var employees = await _companyRepository.GetEmployeesAsync(FName,No);//传入参数
             //通过AutoMapper进行映射转换
             var employeeDtos = _mapper.Map<IEnumerable<EmployeeDto>>(employees);
-
-            return Ok(employeeDtos);
+            if (employeeDtos.Count() != 0) {
+                return Ok();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         [HttpGet("{employeeId}")]
