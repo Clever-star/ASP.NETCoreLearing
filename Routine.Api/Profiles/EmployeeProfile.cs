@@ -23,6 +23,7 @@ namespace Routine.Api.Profiles
                 dest => dest.Age,
                 opt => opt.MapFrom(src => DateTime.Now.Year - src.DateOfBirth.Year));
 
+            CreateMap<EmployeeAddDto,Employee>();//属性几乎一致，不需要针对特殊属性进行配置
         }
     }
 }

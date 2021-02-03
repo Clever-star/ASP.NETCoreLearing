@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Routine.Api.Entities;
 using Routine.Api.Models;
 using Routine.Api.Services;
 using System;
@@ -41,7 +42,7 @@ namespace Routine.Api.Controllers
             return Ok(employeeDtos);
         }
 
-        [HttpGet("{employeeId}")]
+        [HttpGet("{employeeId}", Name = nameof(GetEmployeeForCompany))]
         //获取一个公司下的其中一个员工
         public async Task<ActionResult<EmployeeDto>> GetEmployeeForCompany(Guid companyId,Guid employeeId)
         {
@@ -60,6 +61,26 @@ namespace Routine.Api.Controllers
             var employeeDto = _mapper.Map<EmployeeDto>(employee);
 
             return Ok(employeeDto);
+        }
+
+        [HttpPost]//Controller级别的路由模板已经够用了，此时就不需要再在action级别的路由添加模板了
+        public async Task<ActionResult<EmployeeDto>> CreateEmployeeForCompany(Guid companyId, EmployeeAddDto employee)
+        {
+
+            //先进行判断该公司是否存在
+            if (!await _companyRepository.CompanyExistsAsync(companyId))
+            {
+                return NotFound();
+            }
+
+            var entity = _mapper.Map<Employee>(employee);//需要配置映射
+            _companyRepository.AddEmployee(companyId,entity);
+
+            await _companyRepository.SaveAsync();
+
+            var dtoToReturn = _mapper.Map<EmployeeDto>(entity);
+
+            return CreatedAtRoute(nameof(GetEmployeeForCompany), new { companyId = companyId , employeeId = dtoToReturn.Id }, dtoToReturn );//传入一个对象，包含两个参数;其中对象里的第一个参数可以简写成companyId
         }
     }
 }
