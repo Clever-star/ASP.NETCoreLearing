@@ -90,5 +90,15 @@ namespace Routine.Api.Controllers
             return CreatedAtRoute(nameof(GetCompany),new { companyId = returnDto.Id}, returnDto);
         }
 
+        [HttpOptions]//options这个attribute可以让我们知道针对company这个资源我们是否可以创建、获取、删除等
+        //是作用于资源这个级别的，响应里需要有一个header，allow
+        //public async Task<IActionResult> GetCompaniesOptins() //不需要异步，因为不需要操作数据库
+        public IActionResult GetCompaniesOptins()
+        {
+            Response.Headers.Add("Allow", "GET,POST,OPTIONS");
+
+            //只要option响应成功了就要返回ok，不管allow中是否为空
+            return Ok();
+        }
     }
 }
