@@ -89,9 +89,17 @@ namespace Routine.Api.Services
 
             company.Id = Guid.NewGuid();
 
-            foreach (var employee in company.Employees)
+            //foreach (var employee in company.Employees)
+            //{
+            //    employee.Id = Guid.NewGuid();
+            //}
+            //在添加公司时，因为employee为空出错，所以添加一个判断
+            if (company.Employees != null)
             {
-                employee.Id = Guid.NewGuid();
+                foreach (var employee in company.Employees)
+                {
+                    employee.Id = Guid.NewGuid();
+                }
             }
 
             _context.Companies.Add(company);

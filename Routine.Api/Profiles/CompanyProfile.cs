@@ -19,6 +19,9 @@ namespace Routine.Api.Profiles
                 .ForMember(
                 dest => dest.CompanyName,
                 opt => opt.MapFrom(src => src.Name));
+
+            //为Company和CompanyAddDto之间建立映射关系
+            CreateMap<CompanyAddDto, Company>();//不需要进行其他配置
         }
     }
 }
