@@ -12,5 +12,7 @@ namespace Routine.Api.Models
         //不需要传入实体中的Id属性
         public string Name { get; set; }
         public string Introduction { get; set; }
+        public ICollection<EmployeeAddDto> Employees { get; set; } = new List<EmployeeAddDto>();//这样可以避免发生空引用异常
+        //该属性（Employees）与Comany中的导航属性Employees相同
     }
 }
