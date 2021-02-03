@@ -89,5 +89,34 @@ namespace Routine.Api.Controllers
             //可以使用CreatedAtRoute这个HelpMethod，他允许我们返回一个带地址Header的响应,地址Header中含有uri，通过uri可以找到新创建的资源
             return CreatedAtRoute(nameof(GetCompany),new { companyId = returnDto.Id}, returnDto);
         }
+
+        [HttpPost]
+        //创建Post方法用于创建公司
+        //Post方法的参数应该是在请求的body里面（应该反串行化，成为C#的一个类：即默认[FromBody]）
+        //Dto这个类是用来输出的，其中的Id属性是不用输入的，由后台生成（在此程序中，在其他RESTful风格的程序中也可由客户输入）
+        //Entity实体中的Introduction属性也没有在Dto中体现，所以要添加一个类，专门用于添加公司 CompanyAddDto
+        public async Task<ActionResult<CompanyDto>> CreateCompany(CompanyAddDto company) {
+            //在较老的版本中，需要添加判断，因为在没有[ApiController]这个Attribute的时候，需要检查body中的参数是否转换成了CompanyAddDto这个类，如果参数为空或者不正确时，那么参数为null
+            ////在使用了[ApiController]这个Attribute之后，出现这个情况是，框架会自动返回400BadRequest(来此客户的错误)
+            //if (company == null)
+            //{
+            //    return BadRequest();
+            //}
+
+            //首先，要把CompanyAddDto这个类转化成Entity，使用AutoMapper
+            var entity = _mappper.Map<Company>(company);//仅写此行代码还不能生效，需要设置map映射关系
+            _companyRepository.AddCompany(entity);//map之后调用repository中的添加公司方法，但此时entirty并没有被添加到数据库中，AddCompany方法（可查看源码）只是把参数对象添加到了dbcontext中
+            //在AddCompany方法中，给Id赋了guid类型的值
+            
+            //想要将其操作入数据库中，就需要调用dbcontext的SaveChangesAsync方法，该方法已封装，可在此直接调用
+            await _companyRepository.SaveAsync();//其中具体的实现细节对Controller来说是未知的，抛出异常时，框架也会自动返回500
+            
+            //之后需要将插入资源后的Entity返回，这个映射之前已经设置过了
+            var returnDto = _mappper.Map<CompanyDto>(entity);
+            
+            //Post成功执行后应该返回的状态码为201
+            //可以使用CreatedAtRoute这个HelpMethod，他允许我们返回一个带地址Header的响应,地址Header中含有uri，通过uri可以找到新创建的资源
+            return CreatedAtRoute(nameof(GetCompany),new { companyId = returnDto.Id}, returnDto);
+        }
     }
 }
