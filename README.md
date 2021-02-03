@@ -20,3 +20,13 @@ P16：HTTP HEAD
 P18：过滤和搜索
 
 P19：查询参数
+
+P20-> P21：创建公司资源POST
+
+P21 = P22：创造子资源POST
+
+P23：同时创造父子资源&创造资源合集
+
+P24：自定义Model绑定器
+
+P26->P25：HTTP OPTIONS 和 XML支持
