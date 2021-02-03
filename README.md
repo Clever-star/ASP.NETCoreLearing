@@ -29,4 +29,4 @@ P23：同时创造父子资源&创造资源合集
 
 P24：自定义Model绑定器
 
-P26->P25：HTTP OPTIONS 和 XML支持
+P25：HTTP OPTIONS 和 XML支持
